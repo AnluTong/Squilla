@@ -4,7 +4,12 @@ import android.app.WallpaperManager
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Consumer
+import io.reactivex.internal.functions.Functions
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import me.andrew.squilla.apiservice.api
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,5 +29,16 @@ class MainActivity : AppCompatActivity() {
             } catch (e: Exception) {
             }
         })
+
+        api.imageList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(Consumer {
+                    var size = it.data?.size ?: 0
+                    if (size > 0) {
+                        var img = it.data!![0].url
+
+                    }
+                }, Functions.emptyConsumer())
     }
 }
